@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Black-Scholes Option Calculator</title>
+    <style>
+      :root {
+        font-family: Arial, sans-serif;
+        color: #1f2937;
+        background: #f8fafc;
+      }
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        padding: 40px 12px;
+      }
+      .container {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        max-width: 800px;
+        width: 100%;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        padding: 24px;
+      }
+      h1 {
+        margin-top: 0;
+        margin-bottom: 12px;
+      }
+      p.description {
+        margin-top: 0;
+        color: #4b5563;
+      }
+      form {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 16px;
+        margin-top: 16px;
+      }
+      label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+      input, textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        box-sizing: border-box;
+        font-size: 14px;
+      }
+      textarea {
+        min-height: 68px;
+        resize: vertical;
+      }
+      .actions {
+        grid-column: 1 / -1;
+        display: flex;
+        justify-content: flex-end;
+      }
+      button {
+        background: #2563eb;
+        color: #fff;
+        border: none;
+        padding: 12px 18px;
+        border-radius: 10px;
+        font-size: 15px;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #1d4ed8;
+      }
+      .output {
+        margin-top: 18px;
+        padding: 14px 16px;
+        border-radius: 10px;
+      }
+      .result {
+        background: #ecfdf3;
+        border: 1px solid #bbf7d0;
+        color: #166534;
+      }
+      .error {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #991b1b;
+      }
+      code {
+        background: #f3f4f6;
+        padding: 2px 6px;
+        border-radius: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Black-Scholes Monte Carlo</h1>
+      <p class="description">
+        Enter Black-Scholes inputs and a payoff expression that uses <code>ST</code> for the terminal asset price.
+        The server will simulate log-normal prices under the risk-neutral measure and discount the payoff.
+      </p>
+      <form method="POST">
+        <div>
+          <label for="spot">Spot price (S0)</label>
+          <input type="number" step="any" id="spot" name="spot" value="{{ inputs.spot }}" required>
+        </div>
+        <div>
+          <label for="rate">Risk-free rate (r)</label>
+          <input type="number" step="any" id="rate" name="rate" value="{{ inputs.rate }}" required>
+        </div>
+        <div>
+          <label for="volatility">Volatility (σ)</label>
+          <input type="number" step="any" id="volatility" name="volatility" value="{{ inputs.volatility }}" required>
+        </div>
+        <div>
+          <label for="maturity">Time to maturity (years)</label>
+          <input type="number" step="any" id="maturity" name="maturity" value="{{ inputs.maturity }}" required>
+        </div>
+        <div>
+          <label for="simulations">Number of simulations</label>
+          <input type="number" step="1" id="simulations" name="simulations" value="{{ inputs.simulations }}" required>
+        </div>
+        <div style="grid-column: 1 / -1;">
+          <label for="payoff">Payoff expression</label>
+          <textarea id="payoff" name="payoff" required>{{ inputs.payoff }}</textarea>
+          <small>Examples: <code>maximum(ST - 100, 0)</code>, <code>maximum(110 - ST, 0)</code>, <code>0.5 * maximum(ST - 100, 0)</code></small>
+        </div>
+        <div class="actions">
+          <button type="submit">Calculate</button>
+        </div>
+      </form>
+
+      {% if result is not none %}
+      <div class="output result">
+        <strong>Option price:</strong> {{ "%.4f" | format(result) }}
+      </div>
+      {% endif %}
+
+      {% if error %}
+      <div class="output error">
+        <strong>Error:</strong> {{ error }}
+      </div>
+      {% endif %}
+
+      <p class="description">
+        Supported functions are provided by <code>numexpr</code>, including <code>maximum</code>, <code>minimum</code>,
+        <code>where</code>, <code>exp</code>, <code>log</code>, and basic arithmetic operators.
+      </p>
+    </div>
+  </body>
+</html>
