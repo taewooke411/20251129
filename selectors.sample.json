@@ -1,0 +1,37 @@
+{
+  "sido_select_candidates": [
+    "select[name*='ctprvn']",
+    "select[id*='ctprvn']",
+    "label:has-text('대지위치') >> xpath=.. >> select >> nth=0"
+  ],
+  "sigungu_select_candidates": [
+    "select[name*='signgu']",
+    "select[id*='signgu']",
+    "label:has-text('대지위치') >> xpath=.. >> select >> nth=1"
+  ],
+  "eupmyeondong_select_candidates": [
+    "select[name*='emd']",
+    "select[id*='emd']",
+    "label:has-text('대지위치') >> xpath=.. >> select >> nth=2"
+  ],
+  "bun_input_candidates": [
+    "input[name*='bonbun']",
+    "input[id*='bonbun']",
+    "label:has-text('대지위치') >> xpath=.. >> input >> nth=0"
+  ],
+  "ji_input_candidates": [
+    "input[name*='bubun']",
+    "input[id*='bubun']",
+    "label:has-text('대지위치') >> xpath=.. >> input >> nth=1"
+  ],
+  "search_button_candidates": [
+    "button:has-text('검색')"
+  ],
+  "result_ready_candidates": [
+    ".tb_view",
+    "table"
+  ],
+  "field_selectors": {
+    "건물명": ".building_name"
+  }
+}
